@@ -54,7 +54,7 @@ ggplot(greatness_ideology, aes(independent, -rep_less_dem, label = name)) +
 
 
 
-# Most divisive
+# Most divisive? -------------
 greatness_stats <-
   greatness %>%
   group_by(name) %>%
@@ -63,7 +63,6 @@ greatness_stats <-
             max = max(rating),
             sd = sd(rating)) %>%
   left_join(greatness_ideology)
-
 
 ggplot(greatness_stats %>% 
          select(name, number, mean, sd) %>%
@@ -74,3 +73,13 @@ ggplot(greatness_stats %>%
   facet_grid(stat~., scales = "free_y") +
   ggrepel::geom_text_repel(size = 2, ncol = 1) +
   labs(title = "Opinions are more polarized about the last 20 presidents")
+
+# Not really working, but intention is to show wider opinion range as less certain
+ggplot(greatness_stats %>% 
+         select(name, number, mean, sd),
+       aes(number, mean, label = name, alpha = 1/sd)) +
+  geom_point() +
+  geom_errorbar(aes(ymin = mean - sd, ymax = mean+sd))+
+  ggrepel::geom_text_repel(size = 2, alpha = 0.8) +
+  labs(title = "Opinions are more polarized about the last 20 presidents")
+
