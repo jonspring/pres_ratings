@@ -6,6 +6,9 @@ greatness <-
   greatness_raw %>%
   janitor::clean_names() %>%
   filter(!is.na(name), name != "6") %>%
-  gather(category, rating, -name) %>%
+  mutate(number = row_number()) %>%
+  mutate(number = if_else(number >= 24, as.integer(number+1), number)) %>% ### Darn you Grover Cleveland!
+  mutate(name = fct_reorder(name, number)) %>%
+  gather(category, rating, republican:moderate) %>%
   mutate(rating = rating %>% as.numeric())
 
